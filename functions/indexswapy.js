@@ -7,7 +7,7 @@ const DEFAULT_RATIOS = {
 exports.handler = async (event, context) => {
     // Set CORS headers
     const headers = {
-        'Access-Control-Allow-Origin': 'https://spyconverter.com',
+        'Access-Control-Allow-Origin': 'https://indexswapy.com',
         'Access-Control-Allow-Headers': 'Content-Type',
         'Access-Control-Allow-Methods': 'GET, OPTIONS',
     };
@@ -22,7 +22,7 @@ exports.handler = async (event, context) => {
     }
 
     // Get the path
-    const path = event.path.replace('/.netlify/functions/spy-converter', '');
+    const path = event.path.replace('/.netlify/functions/indexswapy', '');
 
     // Handle different endpoints
     if (path === '/' || path === '') {
@@ -31,7 +31,7 @@ exports.handler = async (event, context) => {
             headers,
             body: JSON.stringify({
                 status: 'ok',
-                message: 'SPY Converter API is running',
+                message: 'IndexSwapy API is running',
                 endpoints: ['/', '/api/ratios', '/ratios', '/data']
             }),
         };

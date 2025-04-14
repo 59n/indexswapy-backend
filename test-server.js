@@ -1,5 +1,5 @@
 const http = require('http');
-const { handler } = require('./functions/spy-converter');
+const { handler } = require('./functions/indexswapy');
 
 const server = http.createServer(async (req, res) => {
     // Convert Node.js request to Netlify Function event format

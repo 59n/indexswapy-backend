@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>SPY Converter Test</title>
+    <title>IndexSwapy Test</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -24,7 +24,7 @@
     </style>
 </head>
 <body>
-    <h1>SPY Converter API Test</h1>
+    <h1>IndexSwapy API Test</h1>
     <div id="results"></div>
     <script>
         const endpoints = ['/', '/api/ratios', '/ratios', '/data'];
@@ -37,7 +37,7 @@
             resultsDiv.appendChild(div);
 
             try {
-                const response = await fetch(`/.netlify/functions/spy-converter${endpoint}`);
+                const response = await fetch(`/.netlify/functions/indexswapy${endpoint}`);
                 const data = await response.json();
                 const pre = document.createElement('pre');
                 pre.textContent = JSON.stringify(data, null, 2);

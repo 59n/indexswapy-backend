@@ -1,4 +1,4 @@
-# SPY Converter API
+# IndexSwapy API
 
 A serverless API for converting between different financial instruments (QQQ, NDX, NQ, ES, and SPY) using Netlify Functions.
 
@@ -6,15 +6,15 @@ A serverless API for converting between different financial instruments (QQQ, ND
 
 - Convert between QQQ, NDX, NQ, ES, and SPY values
 - Serverless architecture using Netlify Functions
-- CORS enabled for spyconverter.com
+- CORS enabled for indexswapy.com
 - Multiple endpoint support
 
 ## API Endpoints
 
-- `/.netlify/functions/spy-converter/` - API status and available endpoints
-- `/.netlify/functions/spy-converter/api/ratios` - Get conversion ratios
-- `/.netlify/functions/spy-converter/ratios` - Alternative endpoint for ratios
-- `/.netlify/functions/spy-converter/data` - Alternative endpoint for ratios
+- `/.netlify/functions/indexswapy/` - API status and available endpoints
+- `/.netlify/functions/indexswapy/api/ratios` - Get conversion ratios
+- `/.netlify/functions/indexswapy/ratios` - Alternative endpoint for ratios
+- `/.netlify/functions/indexswapy/data` - Alternative endpoint for ratios
 
 ## Response Format
 
