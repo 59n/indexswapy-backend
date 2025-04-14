@@ -1,0 +1,13 @@
+{
+  "name": "indexswapy-backend",
+  "version": "1.0.0",
+  "description": "Index conversion API",
+  "main": "functions/indexswapy.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node test-server.js"
+  },
+  "dependencies": {
+    "@netlify/functions": "^2.0.0"
+  }
+} 
