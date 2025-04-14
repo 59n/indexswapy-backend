@@ -53,8 +53,3 @@ A serverless API for converting between different financial instruments (QQQ, ND
 This project is configured for deployment on Netlify. The `netlify.toml` file contains the necessary configuration for:
 - Function directory: `functions`
 - Publish directory: `public`
-
-## Author
-
-- Name: 59n
-- Email: 59n@panel.mom 
