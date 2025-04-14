@@ -7,6 +7,16 @@
   status = 200
 
 [[redirects]]
+  from = "/ratios"
+  to = "/.netlify/functions/indexswapy/ratios"
+  status = 200
+
+[[redirects]]
+  from = "/data"
+  to = "/.netlify/functions/indexswapy/data"
+  status = 200
+
+[[redirects]]
   from = "/*"
   to = "/.netlify/functions/indexswapy/:splat"
   status = 200 
