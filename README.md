@@ -6,7 +6,7 @@ A serverless API for converting between different financial instruments (QQQ, ND
 
 - Convert between QQQ, NDX, NQ, ES, and SPY values
 - Serverless architecture using Netlify Functions
-- CORS enabled for indexswapy.com
+- CORS enabled for indexswapy.netlify.app
 - Multiple endpoint support
 
 ## API Endpoints
