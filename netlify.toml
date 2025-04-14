@@ -1,8 +1,12 @@
 [build]
   functions = "functions"
-  publish = "public"
 
 [[redirects]]
   from = "/api/*"
+  to = "/.netlify/functions/indexswapy/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/*"
   to = "/.netlify/functions/indexswapy/:splat"
   status = 200 
