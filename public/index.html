@@ -9,47 +9,112 @@
             margin: 0 auto;
             padding: 20px;
         }
-        pre {
-            background: #f5f5f5;
-            padding: 10px;
-            border-radius: 5px;
-            overflow-x: auto;
-        }
-        .endpoint {
+        .converter {
             margin-bottom: 20px;
-            padding: 10px;
+            padding: 20px;
             border: 1px solid #ddd;
             border-radius: 5px;
+        }
+        input {
+            padding: 8px;
+            margin: 5px;
+            width: 100px;
+        }
+        button {
+            padding: 8px 16px;
+            margin: 5px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 4px;
         }
     </style>
 </head>
 <body>
-    <h1>IndexSwapy API Test</h1>
-    <p>API Base URL: https://indexswapy.netlify.app/.netlify/functions/indexswapy</p>
-    <div id="results"></div>
-    <script>
-        const endpoints = ['/', '/api/ratios', '/ratios', '/data'];
-        const resultsDiv = document.getElementById('results');
+    <h1>IndexSwapy Converter Test</h1>
+    
+    <div class="converter">
+        <h2>QQQ to NDX Conversion</h2>
+        <input type="number" id="qqq-to-ndx" placeholder="QQQ Value">
+        <button onclick="convert('qqq_to_ndx', 'qqq-to-ndx')">Convert</button>
+        <div class="result" id="qqq-to-ndx-result"></div>
+    </div>
 
-        async function testEndpoint(endpoint) {
-            const div = document.createElement('div');
-            div.className = 'endpoint';
-            div.innerHTML = `<h3>Testing ${endpoint}</h3>`;
-            resultsDiv.appendChild(div);
+    <div class="converter">
+        <h2>QQQ to NQ Conversion</h2>
+        <input type="number" id="qqq-to-nq" placeholder="QQQ Value">
+        <button onclick="convert('qqq_to_nq', 'qqq-to-nq')">Convert</button>
+        <div class="result" id="qqq-to-nq-result"></div>
+    </div>
+
+    <div class="converter">
+        <h2>NQ to QQQ Conversion</h2>
+        <input type="number" id="nq-to-qqq" placeholder="NQ Value">
+        <button onclick="convert('nq_to_qqq', 'nq-to-qqq')">Convert</button>
+        <div class="result" id="nq-to-qqq-result"></div>
+    </div>
+
+    <div class="converter">
+        <h2>NDX to QQQ Conversion</h2>
+        <input type="number" id="ndx-to-qqq" placeholder="NDX Value">
+        <button onclick="convert('ndx_to_qqq', 'ndx-to-qqq')">Convert</button>
+        <div class="result" id="ndx-to-qqq-result"></div>
+    </div>
+
+    <div class="converter">
+        <h2>ES to SPY Conversion</h2>
+        <input type="number" id="es-to-spy" placeholder="ES Value">
+        <button onclick="convert('es_to_spy', 'es-to-spy')">Convert</button>
+        <div class="result" id="es-to-spy-result"></div>
+    </div>
+
+    <div class="converter">
+        <h2>SPY to ES Conversion</h2>
+        <input type="number" id="spy-to-es" placeholder="SPY Value">
+        <button onclick="convert('spy_to_es', 'spy-to-es')">Convert</button>
+        <div class="result" id="spy-to-es-result"></div>
+    </div>
+
+    <script>
+        async function convert(type, inputId) {
+            const value = document.getElementById(inputId).value;
+            const resultElement = document.getElementById(`${inputId}-result`);
+            
+            if (!value) {
+                resultElement.textContent = 'Please enter a value';
+                return;
+            }
 
             try {
-                const response = await fetch(`/.netlify/functions/indexswapy${endpoint}`);
+                const response = await fetch('/.netlify/functions/indexswapy', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ type, value: parseFloat(value) })
+                });
+
                 const data = await response.json();
-                const pre = document.createElement('pre');
-                pre.textContent = JSON.stringify(data, null, 2);
-                div.appendChild(pre);
+                
+                if (data.status === 'ok') {
+                    resultElement.textContent = `Result: ${data.result}`;
+                } else {
+                    resultElement.textContent = `Error: ${data.message}`;
+                }
             } catch (error) {
-                div.innerHTML += `<p style="color: red">Error: ${error.message}</p>`;
+                resultElement.textContent = `Error: ${error.message}`;
             }
         }
-
-        // Test all endpoints
-        endpoints.forEach(testEndpoint);
     </script>
 </body>
 </html> 

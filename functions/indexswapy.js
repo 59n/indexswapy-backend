@@ -7,9 +7,9 @@ const DEFAULT_RATIOS = {
 exports.handler = async (event, context) => {
     // Set CORS headers
     const headers = {
-        'Access-Control-Allow-Origin': 'https://indexswapy.com',
+        'Access-Control-Allow-Origin': 'https://indexswapy.netlify.app',
         'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'GET, OPTIONS',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     };
 
     // Handle preflight requests
@@ -24,17 +24,72 @@ exports.handler = async (event, context) => {
     // Get the path
     const path = event.path.replace('/.netlify/functions/indexswapy', '');
 
-    // Handle different endpoints
-    if (path === '/' || path === '') {
-        return {
-            statusCode: 200,
-            headers,
-            body: JSON.stringify({
-                status: 'ok',
-                message: 'IndexSwapy API is running',
-                endpoints: ['/', '/api/ratios', '/ratios', '/data']
-            }),
-        };
+    // Handle conversion requests
+    if (event.httpMethod === 'POST') {
+        try {
+            const body = JSON.parse(event.body);
+            const { type, value } = body;
+
+            if (!type || !value) {
+                return {
+                    statusCode: 400,
+                    headers,
+                    body: JSON.stringify({
+                        status: 'error',
+                        message: 'Missing type or value'
+                    }),
+                };
+            }
+
+            let result;
+            switch (type) {
+                case 'qqq_to_ndx':
+                    result = value * DEFAULT_RATIOS["NDX/QQQ Ratio"];
+                    break;
+                case 'qqq_to_nq':
+                    result = value * DEFAULT_RATIOS["NQ/QQQ Ratio"];
+                    break;
+                case 'nq_to_qqq':
+                    result = value / DEFAULT_RATIOS["NQ/QQQ Ratio"];
+                    break;
+                case 'ndx_to_qqq':
+                    result = value / DEFAULT_RATIOS["NDX/QQQ Ratio"];
+                    break;
+                case 'es_to_spy':
+                    result = value / DEFAULT_RATIOS["ES/SPY Ratio"];
+                    break;
+                case 'spy_to_es':
+                    result = value * DEFAULT_RATIOS["ES/SPY Ratio"];
+                    break;
+                default:
+                    return {
+                        statusCode: 400,
+                        headers,
+                        body: JSON.stringify({
+                            status: 'error',
+                            message: 'Invalid conversion type'
+                        }),
+                    };
+            }
+
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({
+                    status: 'ok',
+                    result: Number(result.toFixed(2))
+                }),
+            };
+        } catch (error) {
+            return {
+                statusCode: 400,
+                headers,
+                body: JSON.stringify({
+                    status: 'error',
+                    message: error.message
+                }),
+            };
+        }
     }
 
     // Handle ratio endpoints
