@@ -1,25 +1,33 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 
-// Cache for the ratios
-let cachedRatios = {
-    "NDX/QQQ Ratio": 41.10241216829076,
-    "NQ/QQQ Ratio": 41.29471200210854,
-    "ES/SPY Ratio": 10.072138887159946
-};
-
+// Cache for the ratios - start empty
+let cachedRatios = null;
 let lastFetchTime = 0;
-const FETCH_INTERVAL = 30 * 60 * 1000; // 30 minutes in milliseconds
+const FETCH_INTERVAL = 15 * 60 * 1000; // 15 minutes in milliseconds
 
 async function fetchLatestRatios() {
     try {
         const response = await axios.get('https://spyconverter.com/converter.html');
         const $ = cheerio.load(response.data);
         
-        // Find the script containing the ratios
-        const scriptContent = $('script').filter((_, el) => {
-            return $(el).text().includes('es_spy_ratio');
-        }).text();
+        // Find all script tags and look for the one containing the ratios
+        const scripts = $('script').toArray();
+        let scriptContent = '';
+        
+        for (const script of scripts) {
+            const content = $(script).text();
+            if (content.includes('es_spy_ratio') && 
+                content.includes('nq_qqq_ratio') && 
+                content.includes('ndx_qqq_ratio')) {
+                scriptContent = content;
+                break;
+            }
+        }
+
+        if (!scriptContent) {
+            throw new Error('Could not find script containing ratios');
+        }
 
         // Extract ratios using regex
         const es_spy_ratio = scriptContent.match(/let es_spy_ratio = ([\d.]+);/)[1];
@@ -37,12 +45,18 @@ async function fetchLatestRatios() {
         console.log('Ratios updated:', cachedRatios);
     } catch (error) {
         console.error('Error fetching ratios:', error);
-        // Keep using cached values if fetch fails
+        if (!cachedRatios) {
+            // If we have no cached data, throw the error
+            throw error;
+        }
+        // Otherwise, keep using cached values if fetch fails
     }
 }
 
 // Initial fetch
-fetchLatestRatios();
+fetchLatestRatios().catch(error => {
+    console.error('Initial fetch failed:', error);
+});
 
 // Set up periodic fetching
 setInterval(fetchLatestRatios, FETCH_INTERVAL);
@@ -62,6 +76,24 @@ exports.handler = async (event, context) => {
             headers,
             body: '',
         };
+    }
+
+    // Fetch latest ratios on every request
+    try {
+        await fetchLatestRatios();
+    } catch (error) {
+        if (!cachedRatios) {
+            // If we have no cached data, return an error
+            return {
+                statusCode: 503,
+                headers,
+                body: JSON.stringify({
+                    status: 'error',
+                    message: 'Service temporarily unavailable - unable to fetch ratios'
+                }),
+            };
+        }
+        // Otherwise, continue with cached values
     }
 
     // Get the path
